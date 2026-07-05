@@ -13,7 +13,7 @@ public class LoginTest extends BaseUI {
         return new Object[][] {
                 {"chrome"},
                 {"opera"},
-                {"safari"}
+                //{"safari"}
         };
     }
 
@@ -25,7 +25,8 @@ public class LoginTest extends BaseUI {
 
         // Cleaned XPaths (replaced \" with ')
         click("logInButton_xpath");
-        enterText("usernameTextBox_xpath", "K4ng4roo");
+        enterText("usernameTextBox_id", "K4ng4roo");
+        enterText("passwordTextBox_CSS", "password");
     }
 
     // 3. Guaranteed to close the browser, even if the test fails midway

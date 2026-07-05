@@ -2,10 +2,12 @@ package com.datadrivenframework.base;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
+import org.testng.Assert;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -52,11 +54,11 @@ public class BaseUI {
     }
 
     public void enterText(String xpath, String data) {
-        driver.findElement(By.xpath(prop.getProperty(xpath))).sendKeys(data);
+        getElement(xpath).sendKeys(data);
     }
 
     public void click(String xpath) {
-        driver.findElement(By.xpath(prop.getProperty(xpath))).click();
+        getElement(xpath).click();
     }
 
     public void quitBrowser() {
@@ -68,4 +70,43 @@ public class BaseUI {
     public void tearDown() {
         quitBrowser();
     }
-}
+
+    public WebElement getElement(String locator) {
+        WebElement element = null;
+        try {
+            if (locator.endsWith("_id")) {
+                element = driver.findElement(By.id(prop.getProperty(locator)));
+            } else if (locator.endsWith("_xpath")) {
+                element = driver.findElement(By.xpath(prop.getProperty(locator)));
+            } else if (locator.endsWith("_CSS")) {
+                element = driver.findElement(By.cssSelector(prop.getProperty(locator)));
+            } else if (locator.endsWith("_linkText")) {
+                element = driver.findElement(By.linkText(prop.getProperty(locator)));
+            } else if (locator.endsWith("_partialLinkText")) {
+                element = driver.findElement(By.partialLinkText(prop.getProperty(locator)));
+            } else if (locator.endsWith("_name")) {
+                element = driver.findElement(By.name(prop.getProperty(locator)));
+            } else {
+                reportFail("Failing the testcase. Invalid locator " + locator);
+                Assert.fail("Failing the testcase. Invalid locator " + locator);
+            }
+        } catch (Exception e) {
+            reportFail(e.getMessage());
+            e.printStackTrace();
+            Assert.fail("Failing the test case: " + e.getMessage());
+        }
+            return element;
+        }
+
+        public void reportFail (String reportString){
+
+        }
+
+        public void reportPass (String reportString){
+
+        }
+
+        public void takeScreenshotOnFailure() {
+
+        }
+    }
