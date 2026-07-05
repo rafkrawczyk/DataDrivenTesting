@@ -1,16 +1,22 @@
 package com.datadrivenframework.base;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.datadrivenframework.utils.DateUtils;
+import com.datadrivenframework.utils.ExtentReportManager;
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.testng.Assert;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Properties;
 
@@ -18,6 +24,8 @@ public class BaseUI {
 
     public WebDriver driver;
     public Properties prop;
+    public ExtentReports report = ExtentReportManager.getReportInstance();
+    public ExtentTest logger;
 
     public void invokeBrowser(String browserName) {
         if (browserName.equalsIgnoreCase("chrome")) {
@@ -107,6 +115,14 @@ public class BaseUI {
         }
 
         public void takeScreenshotOnFailure() {
-
+            TakesScreenshot takesScreenshot = (TakesScreenshot) driver;
+            File sourceFile = takesScreenshot.getScreenshotAs(OutputType.FILE);
+            File destFile = new File(System.getProperty("user.dir") + "/screenshots/" + DateUtils.getTimeStamp() + ".png");
+            try {
+                FileUtils.copyFile(sourceFile, destFile);
+                logger.addScreenCaptureFromPath(System.getProperty("user.dir") + "/screenshots/" + DateUtils.getTimeStamp() + ".png");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
